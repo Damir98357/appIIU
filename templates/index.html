@@ -9,12 +9,14 @@
     <h1>Patient Data</h1>
     <table>
         <tr>
+            <th>ID</th>
             <th>Heart Rate (bpm)</th>
             <th>GSR</th>
             <th>Comment</th>
         </tr>
         {% for patient in patients %}
         <tr>
+            <td>{{ patient[0] }}</td> <!-- Dodato za prikaz ID-ja pacijenta -->
             <td>{{ patient[1] }}</td>
             <td>{{ patient[2] }}</td>
             <td>{{ patient[3] }}</td>

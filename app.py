@@ -48,6 +48,16 @@ def add():
     conn.close()
     return redirect(url_for('index'))
 
+@app.route('/delete/<int:patient_id>', methods=['DELETE'])
+def delete_patient(patient_id):
+    conn = sqlite3.connect('patients.db')
+    c = conn.cursor()
+    c.execute('DELETE FROM patients WHERE id = ?', (patient_id,))
+    conn.commit()
+    conn.close()
+    return '', 204  # Vraćamo status 204 No Content jer nema tela odgovora
+
+
 # Funkcija za simulaciju čitanja sa senzora
 def simulate_sensor_data():
     heart_rate = random.randint(90, 120)
