@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Patient Data{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='close-up-stethoscope-blank-blue-background.jpg') }}"); /* Use relative path for the image */
+            background-size: cover;
+        }
+        .navbar {
+            margin-bottom: 20px;
+        }
+        .navbar-nav {
+            flex-direction: row;
+            justify-content: center; /* Center the navbar items */
+            width: 100%;
+        }
+        .nav-link {
+            color: #ffffff !important; /* Darker font color */
+        }
+        .nav-link:hover {
+            color: #e0e0e0 !important; /* Slightly lighter on hover */
+        }
+        .table th, .table td {
+            color: #ffffff; /* Make the font color white for better visibility */
+        }
+        .table {
+            background-color: rgba(0, 0, 0, 0.5); /* Add a semi-transparent background to the table for better contrast */
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto"> <!-- Centered the navbar items -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index') }}">Patient Data</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('add') }}">Add New Data</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('simulate') }}">Simulate Sensor Data</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('arduino') }}">Read Data from Arduino</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

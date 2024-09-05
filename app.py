@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 import random
 import sqlite3
-import threading
-import time
 
 app = Flask(__name__)
 
@@ -11,7 +9,8 @@ try:
     import serial
     ser = serial.Serial('COM3', 9600)  # Zameni sa odgovarajućim portom
     arduino_connected = True
-except:
+except Exception as e:
+    print(f"Arduino connection error: {e}")
     arduino_connected = False
 
 # Inicijalizacija baze podataka
@@ -35,65 +34,77 @@ def index():
     conn.close()
     return render_template('index.html', patients=patients)
 
-@app.route('/add', methods=['POST'])
+# Stranica za dodavanje novih pacijenata koja takođe prikazuje trenutne pacijente
+@app.route('/add', methods=['GET', 'POST'])
 def add():
-    heart_rate = request.form['heart_rate']
-    gsr = request.form['gsr']
-    comment = request.form['comment']
+    if request.method == 'POST':
+        heart_rate = request.form['heart_rate']
+        gsr = request.form['gsr']
+        comment = request.form['comment']
 
+        conn = sqlite3.connect('patients.db')
+        c = conn.cursor()
+        c.execute('INSERT INTO patients (heart_rate, gsr, comment) VALUES (?, ?, ?)', (heart_rate, gsr, comment))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('add'))  # Ostanite na istoj stranici nakon dodavanja pacijenta
+
+    # Prikaz trenutnih pacijenata na stranici za dodavanje
     conn = sqlite3.connect('patients.db')
     c = conn.cursor()
-    c.execute('INSERT INTO patients (heart_rate, gsr, comment) VALUES (?, ?, ?)', (heart_rate, gsr, comment))
-    conn.commit()
+    c.execute('SELECT * FROM patients')
+    patients = c.fetchall()
     conn.close()
-    return redirect(url_for('index'))
+    return render_template('add.html', patients=patients)
 
-@app.route('/delete/<int:patient_id>', methods=['DELETE'])
-def delete_patient(patient_id):
-    conn = sqlite3.connect('patients.db')
-    c = conn.cursor()
-    c.execute('DELETE FROM patients WHERE id = ?', (patient_id,))
-    conn.commit()
-    conn.close()
-    return '', 204  # Vraćamo status 204 No Content jer nema tela odgovora
-
-
-# Funkcija za simulaciju čitanja sa senzora
-def simulate_sensor_data():
-    heart_rate = random.randint(90, 120)
-    gsr = random.uniform(10, 100)
-    return heart_rate, gsr
-
-# Funkcija za čitanje podataka sa Arduina
-def read_arduino_data():
-    try:
-        line = ser.readline().decode('utf-8').strip()
-        heart_rate, gsr = map(float, line.split(','))
-        return heart_rate, gsr
-    except:
-        return None, None
-
-@app.route('/simulate')
+@app.route('/simulate', methods=['GET', 'POST'])
 def simulate():
-    heart_rate, gsr = simulate_sensor_data()
-    conn = sqlite3.connect('patients.db')
-    c = conn.cursor()
-    c.execute('INSERT INTO patients (heart_rate, gsr) VALUES (?, ?)', (heart_rate, gsr))
-    conn.commit()
-    conn.close()
-    return redirect(url_for('index'))
+    if request.method == 'POST':
+        heart_rate = random.randint(90, 120)
+        gsr = random.uniform(10, 100)
+        conn = sqlite3.connect('patients.db')
+        c = conn.cursor()
+        c.execute('INSERT INTO patients (heart_rate, gsr) VALUES (?, ?)', (heart_rate, gsr))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('index'))
+    
+    return render_template('simulate.html')
 
-@app.route('/arduino')
+@app.route('/arduino', methods=['GET', 'POST'])
 def arduino():
-    if arduino_connected:
-        heart_rate, gsr = read_arduino_data()
+    if request.method == 'POST':
+        try:
+            line = ser.readline().decode('utf-8').strip()
+            heart_rate, gsr = map(float, line.split(','))
+        except:
+            heart_rate, gsr = None, None
+        
         if heart_rate is not None and gsr is not None:
             conn = sqlite3.connect('patients.db')
             c = conn.cursor()
             c.execute('INSERT INTO patients (heart_rate, gsr) VALUES (?, ?)', (heart_rate, gsr))
             conn.commit()
             conn.close()
-    return redirect(url_for('index'))
+        return redirect(url_for('index'))
+    
+    return render_template('arduino.html')
+
+
+
+@app.route('/delete/<int:patient_id>', methods=['DELETE'])
+def delete_patient(patient_id):
+    try:
+        conn = sqlite3.connect('patients.db')
+        c = conn.cursor()
+        c.execute('DELETE FROM patients WHERE id = ?', (patient_id,))
+        conn.commit()
+        conn.close()
+        return '', 204  # Return status 204 No Content as there's no response body
+    except Exception as e:
+        print(f"Error deleting patient: {e}")
+        return '', 500  # Return status 500 Internal Server Error in case of any error
+
 
 if __name__ == '__main__':
     init_db()
