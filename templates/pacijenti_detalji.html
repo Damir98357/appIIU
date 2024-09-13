@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalji pacijenta{% endblock %}
+
+{% block content %}
+<h1>Detalji pacijenta: {{ patient[0] }} {{ patient[1] }}</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Heart Rate</th>
+            <th>GSR</th>
+            <th>Date & Time</th>
+            <th>Comment</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for data in patient_data %}
+        <tr>
+            <td>{{ data[0] }}</td>
+            <td>{{ data[1] }}</td>
+            <td>{{ data[2] }}</td>
+            <td>{{ data[3] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
