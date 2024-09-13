@@ -1,27 +1,33 @@
 {% extends 'base.html' %}
 
-{% block title %}Patient Data{% endblock %}
+{% block title %}Lista Pacijenata{% endblock %}
 
 {% block content %}
-    <h1>Patient Data</h1>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Heart Rate (bpm)</th>
-                <th>GSR</th>
-                <th>Comment</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for patient in patients %}
-            <tr>
-                <td>{{ patient[0] }}</td>
-                <td>{{ patient[1] }}</td>
-                <td>{{ patient[2] }}</td>
-                <td>{{ patient[3] }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<h1>Lista Pacijenata</h1>
+
+<!-- Tabela sa podacima o pacijentima -->
+<table class="table table-striped mt-4">
+    <thead>
+        <tr>
+            <th>Health Card ID</th>
+            <th>Ime</th>
+            <th>Prezime</th>
+            <th>Detalji</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for patient in patients %}
+        <tr>
+            <td>{{ patient[0] }}</td> <!-- Health Card ID -->
+            <td>{{ patient[1] }}</td> <!-- Ime -->
+            <td>{{ patient[2] }}</td> <!-- Prezime -->
+            <td>
+                <a href="{{ url_for('patient_data', patient_id=patient[0]) }}" class="btn btn-primary">
+                    Pogledaj Detalje
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}
