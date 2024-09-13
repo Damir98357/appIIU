@@ -21,16 +21,14 @@
             color: #ffffff !important; 
         }
         .nav-link:hover {
-            color: #e0e0e0 !important; }
+            color: #e0e0e0 !important; 
+        }
         .table th, .table td {
             color: #ffffff;
-         
         }
-    
         .table {
             background-color: rgba(0, 0, 0, 0.5); 
         }
-    
     </style>
 </head>
 <body>
@@ -38,16 +36,13 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mx-auto"> 
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('index') }}">Patient Data</a>
+                    <a class="nav-link" href="{{ url_for('index') }}">Lista Pacijenata</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('add') }}">Add New Data</a>
+                    <a class="nav-link" href="{{ url_for('add_patient') }}">Dodavanje novog pacijenta</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('simulate') }}">Simulate Sensor Data</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('arduino') }}">Read Data from Arduino</a>
+                    <a class="nav-link" href="{{ url_for('add_patient_data') }}">Ubacivanje podataka</a>
                 </li>
             </ul>
         </div>
