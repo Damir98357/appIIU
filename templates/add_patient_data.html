@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Patient Data{% endblock %}
+
+{% block content %}
+    <h1>Dodajte pacijenta</h1>
+
+    <!-- Forma za unos podataka pacijenta -->
+    <form method="POST" action="{{ url_for('add_patient_data') }}">
+        <div class="form-group">
+            <label for="health_card_id">Odaberite pacijenta (Health Card ID)</label>
+            <select id="health_card_id" name="health_card_id" class="form-control" required>
+                <option value="">Choose...</option>
+                {% for patient in patients %}
+                    <option value="{{ patient[0] }}">{{ patient[0] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="heart_rate">Heart Rate:</label>
+            <input type="number" id="heart_rate" name="heart_rate" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="gsr">GSR:</label>
+            <input type="number" step="0.01" id="gsr" name="gsr" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="datetime">Date and Time:</label>
+            <input type="datetime-local" id="datetime" name="datetime" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="comment">Comment:</label>
+            <textarea id="comment" name="comment" class="form-control" rows="3"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+{% endblock %}
