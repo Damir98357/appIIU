@@ -1,44 +1,23 @@
 {% extends 'base.html' %}
 
-{% block title %}Add New Data{% endblock %}
+{% block title %}Dodavanje novog pacijenta{% endblock %}
 
 {% block content %}
-    <h1>Add New Data</h1>
-    <form action="/add" method="post">
-        <div class="form-group">
-            <label for="heart_rate">Heart Rate (bpm):</label>
-            <input type="number" id="heart_rate" name="heart_rate" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="gsr">GSR:</label>
-            <input type="text" id="gsr" name="gsr" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="comment">Comment:</label>
-            <textarea id="comment" name="comment" class="form-control"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+    <h1>Dodavanje novog pacijenta</h1>
 
-    <h2>Current Patients</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Heart Rate (bpm)</th>
-                <th>GSR</th>
-                <th>Comment</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for patient in patients %}
-            <tr>
-                <td>{{ patient[0] }}</td>
-                <td>{{ patient[1] }}</td>
-                <td>{{ patient[2] }}</td>
-                <td>{{ patient[3] }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <form method="POST" action="{{ url_for('add_patient') }}">
+        <div class="form-group">
+            <label for="health_card_id">Health Card ID:</label>
+            <input type="text" id="health_card_id" name="health_card_id" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="first_name">First Name:</label>
+            <input type="text" id="first_name" name="first_name" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="last_name">Last Name:</label>
+            <input type="text" id="last_name" name="last_name" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Patient</button>
+    </form>
 {% endblock %}
