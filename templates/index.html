@@ -22,9 +22,10 @@
             <td>{{ patient[1] }}</td> <!-- Ime -->
             <td>{{ patient[2] }}</td> <!-- Prezime -->
             <td>
-                <a href="{{ url_for('patient_data', patient_id=patient[0]) }}" class="btn btn-primary">
+                <a href="{{ url_for('pacijenti_detalji', health_card_id=patient[0]) }}" class="btn btn-primary">
                     Pogledaj Detalje
                 </a>
+                
             </td>
         </tr>
         {% endfor %}

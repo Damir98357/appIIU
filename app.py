@@ -66,29 +66,26 @@ def add_patient_data():
     return render_template('add_patient_data.html', patients=patients)
 
 
-@app.route('/pacijenti_detalji/<int:patient_id>', methods=['GET'])
-def patient_data(patient_id):
-    # Povezivanje sa bazom
+
+
+@app.route('/pacijenti_detalji/<int:health_card_id>')
+def pacijenti_detalji(health_card_id):
+    # Kreiranje konekcije i kursora
     conn = sqlite3.connect('patients.db')
     c = conn.cursor()
-
-    # Dohvatanje pacijenta iz tabele pacijenti
-    c.execute('SELECT first_name, last_name FROM pacijenti WHERE health_card_id = ?', (patient_id,))
+    
+    # Preuzimanje osnovnih informacija o pacijentu
+    c.execute('SELECT first_name, last_name FROM pacijenti WHERE health_card_id = ?', (health_card_id,))
     patient = c.fetchone()
-
-    # Dohvatanje podataka iz tabele pacijent_podaci
-    c.execute('SELECT heart_rate, gsr, datetime, comment FROM pacijent_podaci WHERE health_card_id = ?', (patient_id,))
+    
+    # Preuzimanje svih podataka o pacijentu
+    c.execute('SELECT heart_rate, gsr, datetime, comment FROM pacijent_podaci WHERE health_card_id = ?', (health_card_id,))
     patient_data = c.fetchall()
-
+    
+    # Zatvaranje konekcije
     conn.close()
-
-    # Proveri da li pacijent postoji
-    if patient is None:
-        return "Pacijent nije pronađen", 404
-
-    # Prikaz stranice sa podacima o pacijentu
+    
     return render_template('pacijenti_detalji.html', patient=patient, patient_data=patient_data)
-
 
 
 if __name__ == '__main__':
