@@ -28,7 +28,7 @@
         </div>
 
         <div class="form-group">
-            <label for="datetime">Date and Time:</label>
+            <label for="datetime">Datum i vreme:</label>
             <input type="datetime-local" id="datetime" name="datetime" class="form-control" required>
         </div>
 
@@ -39,4 +39,15 @@
 
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function(event) {
+            var datetimeInput = document.getElementById('datetime');
+            var datetimeValue = datetimeInput.value;
+            var formattedDatetime = datetimeValue.replace('T', ' ') + ':00';
+            datetimeInput.value = formattedDatetime;
+        });
+    </script>
+
+
 {% endblock %}
