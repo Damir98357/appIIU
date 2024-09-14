@@ -35,14 +35,20 @@ def add_patient():
 
     return render_template('add.html')
 
+from datetime import datetime
+
 @app.route('/add_patient_data', methods=['GET', 'POST'])
 def add_patient_data():
     if request.method == 'POST':
         health_card_id = request.form['health_card_id']
         heart_rate = request.form['heart_rate']
         gsr = request.form['gsr']
-        datetime = request.form['datetime']
+        datetime_str = request.form['datetime']
         comment = request.form['comment']
+
+        # Pretvaranje datetime iz forme u željeni format
+        datetime_obj = datetime.strptime(datetime_str, '%Y-%m-%dT%H:%M')
+        formatted_datetime = datetime_obj.strftime('%Y-%m-%d %H:%M:%S')
 
         # Unos podataka u pacijent_podaci tabelu
         conn = sqlite3.connect('patients.db')
@@ -50,7 +56,7 @@ def add_patient_data():
         c.execute('''INSERT INTO pacijent_podaci 
                      (health_card_id, heart_rate, gsr, datetime, comment) 
                      VALUES (?, ?, ?, ?, ?)''',
-                  (health_card_id, heart_rate, gsr, datetime, comment))
+                  (health_card_id, heart_rate, gsr, formatted_datetime, comment))
         conn.commit()
         conn.close()
 
@@ -64,7 +70,6 @@ def add_patient_data():
     conn.close()
 
     return render_template('add_patient_data.html', patients=patients)
-
 
 @app.route('/pacijenti_detalji/<int:health_card_id>')
 def pacijenti_detalji(health_card_id):
@@ -89,8 +94,8 @@ def get_patient_data(health_card_id):
     conn = sqlite3.connect('patients.db')
     c = conn.cursor()
     
-    # Preuzimanje podataka za grafikon
-    c.execute('SELECT heart_rate, gsr, datetime FROM pacijent_podaci WHERE health_card_id = ?', (health_card_id,))
+    # Preuzimanje podataka za grafikon i sortiranje prema datumu
+    c.execute('SELECT heart_rate, gsr, datetime FROM pacijent_podaci WHERE health_card_id = ? ORDER BY datetime ASC', (health_card_id,))
     patient_data = c.fetchall()
     conn.close()
 
@@ -102,6 +107,7 @@ def get_patient_data(health_card_id):
     }
     
     return jsonify(data)
+
 
 
 @app.route('/simulate', methods=['GET', 'POST'])
