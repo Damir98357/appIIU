@@ -31,9 +31,8 @@
     <canvas id="patientChart" width="400" height="200"></canvas>
 </div>
 
-<!-- Dodavanje Chart.js iz CDN-a -->
+<!-- Dodavanje Chart.js iz CDN-a i date adaptera -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!-- Dodavanje Chart.js Adapter za Date-fns iz CDN-a -->
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 
 <script>
@@ -43,19 +42,12 @@
     fetch(`/get_patient_data/${healthCardId}`)
         .then(response => response.json())
         .then(data => {
-            if (!data.heart_rate || !data.gsr || !data.datetime) {
-                alert('Podaci nisu ispravno učitani');
-                return;
-            }
-
-            const labels = data.datetime.map(date => new Date(date));
-
             // Kreiranje grafikona za Heart Rate i GSR
             const ctx = document.getElementById('patientChart').getContext('2d');
-            new Chart(ctx, {
+            const patientChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: labels,  // Datumi
+                    labels: data.datetime,  // Datumi
                     datasets: [{
                         label: 'Heart Rate',
                         data: data.heart_rate,
@@ -70,6 +62,7 @@
                     }]
                 },
                 options: {
+                    responsive: true,
                     scales: {
                         x: {
                             type: 'time',
@@ -78,20 +71,32 @@
                             },
                             title: {
                                 display: true,
-                                text: 'Date & Time'
+                                text: 'Datum i vreme'
                             }
                         },
                         y: {
                             title: {
                                 display: true,
-                                text: 'Values'
+                                text: 'Vrednosti'
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    const datasetLabel = tooltipItem.dataset.label || '';
+                                    const value = tooltipItem.raw;
+                                    const date = tooltipItem.label; // Datumski podatak
+                                    return `${datasetLabel}: ${value} (${date})`;
+                                }
                             }
                         }
                     }
                 }
             });
-        })
-        .catch(error => alert('Došlo je do greške: ' + error));
+        });
 </script>
+
 
 {% endblock %}
