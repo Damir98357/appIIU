@@ -3,7 +3,7 @@ import sqlite3
 import random
 import string
 import serial
-from datetime import datetime
+from datetime import datetime,timedelta
 
 app = Flask(__name__)
 
@@ -102,6 +102,44 @@ def get_patient_data(health_card_id):
     }
     
     return jsonify(data)
+
+
+@app.route('/simulate', methods=['GET', 'POST'])
+def simulate():
+    if request.method == 'POST':
+        health_card_id = request.form['health_card_id']
+
+        # Generišemo simulirane podatke
+        num_records = 4  # Broj simuliranih zapisa
+        now = datetime.now()
+
+        conn = sqlite3.connect('patients.db')
+        c = conn.cursor()
+
+        for _ in range(num_records):
+            heart_rate = random.randint(60, 100)  # Random heart rate između 60 i 100
+            gsr = random.randint(1,100)  # Random GSR između 0.5 i 5.0
+            date_time = now - timedelta(days=random.randint(1, 30))  # Random datum u poslednjih 30 dana
+            comment = ''.join(random.choices(string.ascii_letters + string.digits, k=10))  # Random komentar
+
+            c.execute('''INSERT INTO pacijent_podaci 
+                         (health_card_id, heart_rate, gsr, datetime, comment) 
+                         VALUES (?, ?, ?, ?, ?)''',
+                      (health_card_id, heart_rate, gsr, date_time.strftime('%Y-%m-%d %H:%M:%S'), comment))
+
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for('index'))
+
+    # Učitavanje pacijenata za dropdown
+    conn = sqlite3.connect('patients.db')
+    c = conn.cursor()
+    c.execute('SELECT health_card_id, first_name, last_name FROM pacijenti')
+    patients = c.fetchall()
+    conn.close()
+
+    return render_template('simulate.html', patients=patients)
 
 
 if __name__ == '__main__':
