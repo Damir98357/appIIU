@@ -2,37 +2,46 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Patient Data{% endblock %}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
         body {
             background-image: url("{{ url_for('static', filename='close-up-stethoscope-blank-blue-background.jpg') }}"); 
-            background-size: cover;
+            background-size:cover;
         }
-        .navbar {
-            margin-bottom: 20px;
+
+
+        .navbar-toggler {
+            background-color: #f9f9f9; 
+            
         }
-        .navbar-nav {
-            flex-direction: row;
-            justify-content: center; 
-            width: 100%;
-        }
-        .nav-link {
-            color: #ffffff !important; 
-        }
-        .nav-link:hover {
-            color: #e0e0e0 !important; 
-        }
-        .table th, .table td {
-            color: #ffffff;
-        }
+
         .table {
-            background-color: rgba(0, 0, 0, 0.5); 
+            background-color: #f9f9f9; 
+           ;
+            
         }
+
+ canvas{
+    background-color: #f9f9f9;
+ }
+
+
+
+@media (max-width: 768px) {
+    #chart-container {
+        height: 300px;
+    }
+}
+     
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-light bg-light justify-content-between">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
@@ -56,6 +65,5 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    
 </body>
 </html>

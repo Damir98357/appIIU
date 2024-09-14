@@ -46,11 +46,10 @@ def add_patient_data():
         datetime_str = request.form['datetime']
         comment = request.form['comment']
 
-        # Pretvaranje datetime iz forme u željeni format
         datetime_obj = datetime.strptime(datetime_str, '%Y-%m-%dT%H:%M')
         formatted_datetime = datetime_obj.strftime('%Y-%m-%d %H:%M:%S')
 
-        # Unos podataka u pacijent_podaci tabelu
+       
         conn = sqlite3.connect('patients.db')
         c = conn.cursor()
         c.execute('''INSERT INTO pacijent_podaci 
@@ -62,7 +61,7 @@ def add_patient_data():
 
         return redirect(url_for('index'))
 
-    # Selektovanje svih pacijenata za dropdown
+
     conn = sqlite3.connect('patients.db')
     c = conn.cursor()
     c.execute('SELECT health_card_id, first_name, last_name FROM pacijenti')
@@ -76,11 +75,11 @@ def pacijenti_detalji(health_card_id):
     conn = sqlite3.connect('patients.db')
     c = conn.cursor()
     
-    # Preuzimanje osnovnih informacija o pacijentu
+    
     c.execute('SELECT first_name, last_name FROM pacijenti WHERE health_card_id = ?', (health_card_id,))
     patient = c.fetchone()
     
-    # Preuzimanje svih podataka o pacijentu
+   
     c.execute('SELECT heart_rate, gsr, datetime, comment FROM pacijent_podaci WHERE health_card_id = ?', (health_card_id,))
     patient_data = c.fetchall()
     
@@ -94,12 +93,12 @@ def get_patient_data(health_card_id):
     conn = sqlite3.connect('patients.db')
     c = conn.cursor()
     
-    # Preuzimanje podataka za grafikon i sortiranje prema datumu
+    
     c.execute('SELECT heart_rate, gsr, datetime FROM pacijent_podaci WHERE health_card_id = ? ORDER BY datetime ASC', (health_card_id,))
     patient_data = c.fetchall()
     conn.close()
 
-    # Strukturisanje podataka za Chart.js
+    
     data = {
         'heart_rate': [row[0] for row in patient_data],
         'gsr': [row[1] for row in patient_data],
@@ -115,18 +114,18 @@ def simulate():
     if request.method == 'POST':
         health_card_id = request.form['health_card_id']
 
-        # Generišemo simulirane podatke
-        num_records = 4  # Broj simuliranih zapisa
+       
+        num_records = 4  
         now = datetime.now()
 
         conn = sqlite3.connect('patients.db')
         c = conn.cursor()
 
         for _ in range(num_records):
-            heart_rate = random.randint(60, 100)  # Random heart rate između 60 i 100
-            gsr = random.randint(1,100)  # Random GSR između 0.5 i 5.0
-            date_time = now - timedelta(days=random.randint(1, 30))  # Random datum u poslednjih 30 dana
-            comment = ''.join(random.choices(string.ascii_letters + string.digits, k=10))  # Random komentar
+            heart_rate = random.randint(60, 100) 
+            gsr = random.randint(1,100)  
+            date_time = now - timedelta(days=random.randint(1, 30)) 
+            comment = ''.join(random.choices(string.ascii_letters + string.digits, k=10))  
 
             c.execute('''INSERT INTO pacijent_podaci 
                          (health_card_id, heart_rate, gsr, datetime, comment) 
@@ -138,7 +137,7 @@ def simulate():
 
         return redirect(url_for('index'))
 
-    # Učitavanje pacijenata za dropdown
+    
     conn = sqlite3.connect('patients.db')
     c = conn.cursor()
     c.execute('SELECT health_card_id, first_name, last_name FROM pacijenti')

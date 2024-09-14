@@ -8,10 +8,10 @@
 <table class="table table-striped">
     <thead>
         <tr>
-            <th>Heart Rate</th>
+            <th>Otkucaj srca</th>
             <th>GSR</th>
-            <th>Date & Time</th>
-            <th>Comment</th>
+            <th>Datum i vreme</th>
+            <th>Komentar</th>
         </tr>
     </thead>
     <tbody>
@@ -26,30 +26,34 @@
     </tbody>
 </table>
 
-<!-- Canvas za grafikon -->
-<div class="mt-5">
-    <canvas id="patientChart" width="400" height="200"></canvas>
+
+<div id="chart-container"></div>
+    <canvas id="patientChart"></canvas>
 </div>
 
-<!-- Dodavanje Chart.js iz CDN-a i date adaptera -->
+
+
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 
 <script>
-    // Prikupljanje podataka sa servera
+    
     const healthCardId = "{{ health_card_id }}";
 
     fetch(`/get_patient_data/${healthCardId}`)
         .then(response => response.json())
         .then(data => {
-            // Kreiranje grafikona za Heart Rate i GSR
+           
+
+
             const ctx = document.getElementById('patientChart').getContext('2d');
             const patientChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: data.datetime,  // Datumi
+                    labels: data.datetime,
                     datasets: [{
-                        label: 'Heart Rate',
+                        label: 'Otkucaj srca',
                         data: data.heart_rate,
                         borderColor: 'rgb(255, 99, 132)',
                         fill: false
@@ -87,7 +91,7 @@
                                 label: function(tooltipItem) {
                                     const datasetLabel = tooltipItem.dataset.label || '';
                                     const value = tooltipItem.raw;
-                                    const date = tooltipItem.label; // Datumski podatak
+                                    const date = tooltipItem.label;
                                     return `${datasetLabel}: ${value} (${date})`;
                                 }
                             }

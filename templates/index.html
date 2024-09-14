@@ -5,7 +5,7 @@
 {% block content %}
 <h1>Lista Pacijenata</h1>
 
-<!-- Tabela sa podacima o pacijentima -->
+
 <table class="table table-striped mt-4">
     <thead>
         <tr>
@@ -18,9 +18,9 @@
     <tbody>
         {% for patient in patients %}
         <tr>
-            <td>{{ patient[0] }}</td> <!-- Health Card ID -->
-            <td>{{ patient[1] }}</td> <!-- Ime -->
-            <td>{{ patient[2] }}</td> <!-- Prezime -->
+            <td>{{ patient[0] }}</td> 
+            <td>{{ patient[1] }}</td> 
+            <td>{{ patient[2] }}</td> 
             <td>
                 <a href="{{ url_for('pacijenti_detalji', health_card_id=patient[0]) }}" class="btn btn-primary">
                     Pogledaj Detalje
