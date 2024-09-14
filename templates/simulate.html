@@ -1,10 +1,19 @@
 {% extends 'base.html' %}
 
-{% block title %}Simulate Sensor Data{% endblock %}
+{% block title %}Simulacija{% endblock %}
 
 {% block content %}
-    <h1>Simulate Sensor Data</h1>
-    <form action="/simulate" method="post">
-        <button type="submit" class="btn btn-primary">Simulate</button>
-    </form>
+<h1>Simulacija Unosa Podataka</h1>
+
+<form action="{{ url_for('simulate') }}" method="post">
+    <div class="form-group">
+        <label for="health_card_id">Izaberite Pacijenta:</label>
+        <select id="health_card_id" name="health_card_id" class="form-control">
+            {% for patient in patients %}
+                <option value="{{ patient[0] }}">{{ patient[1] }} {{ patient[2] }} (ID: {{ patient[0] }})</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Pokreni Simulaciju</button>
+</form>
 {% endblock %}
