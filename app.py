@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for ,jsonify
 import sqlite3
 import random
 import string
@@ -66,11 +66,8 @@ def add_patient_data():
     return render_template('add_patient_data.html', patients=patients)
 
 
-
-
 @app.route('/pacijenti_detalji/<int:health_card_id>')
 def pacijenti_detalji(health_card_id):
-    # Kreiranje konekcije i kursora
     conn = sqlite3.connect('patients.db')
     c = conn.cursor()
     
@@ -82,10 +79,29 @@ def pacijenti_detalji(health_card_id):
     c.execute('SELECT heart_rate, gsr, datetime, comment FROM pacijent_podaci WHERE health_card_id = ?', (health_card_id,))
     patient_data = c.fetchall()
     
-    # Zatvaranje konekcije
     conn.close()
     
-    return render_template('pacijenti_detalji.html', patient=patient, patient_data=patient_data)
+    return render_template('pacijenti_detalji.html', patient=patient, patient_data=patient_data, health_card_id=health_card_id)
+
+
+@app.route('/get_patient_data/<int:health_card_id>')
+def get_patient_data(health_card_id):
+    conn = sqlite3.connect('patients.db')
+    c = conn.cursor()
+    
+    # Preuzimanje podataka za grafikon
+    c.execute('SELECT heart_rate, gsr, datetime FROM pacijent_podaci WHERE health_card_id = ?', (health_card_id,))
+    patient_data = c.fetchall()
+    conn.close()
+
+    # Strukturisanje podataka za Chart.js
+    data = {
+        'heart_rate': [row[0] for row in patient_data],
+        'gsr': [row[1] for row in patient_data],
+        'datetime': [row[2] for row in patient_data]
+    }
+    
+    return jsonify(data)
 
 
 if __name__ == '__main__':
