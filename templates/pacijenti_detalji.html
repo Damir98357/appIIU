@@ -31,6 +31,67 @@
     <canvas id="patientChart" width="400" height="200"></canvas>
 </div>
 
+<!-- Dodavanje Chart.js iz CDN-a -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Dodavanje Chart.js Adapter za Date-fns iz CDN-a -->
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 
+<script>
+    // Prikupljanje podataka sa servera
+    const healthCardId = "{{ health_card_id }}";
+
+    fetch(`/get_patient_data/${healthCardId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (!data.heart_rate || !data.gsr || !data.datetime) {
+                alert('Podaci nisu ispravno učitani');
+                return;
+            }
+
+            const labels = data.datetime.map(date => new Date(date));
+
+            // Kreiranje grafikona za Heart Rate i GSR
+            const ctx = document.getElementById('patientChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,  // Datumi
+                    datasets: [{
+                        label: 'Heart Rate',
+                        data: data.heart_rate,
+                        borderColor: 'rgb(255, 99, 132)',
+                        fill: false
+                    },
+                    {
+                        label: 'GSR',
+                        data: data.gsr,
+                        borderColor: 'rgb(54, 162, 235)',
+                        fill: false
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'day'
+                            },
+                            title: {
+                                display: true,
+                                text: 'Date & Time'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Values'
+                            }
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => alert('Došlo je do greške: ' + error));
+</script>
 
 {% endblock %}
