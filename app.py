@@ -7,7 +7,7 @@ from datetime import datetime,timedelta
 
 app = Flask(__name__)
 
-@app.route('/index')
+@app.route('/')
 def index():
     conn = sqlite3.connect('patients.db')
     c = conn.cursor()
